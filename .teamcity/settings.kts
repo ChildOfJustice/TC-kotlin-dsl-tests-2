@@ -1,4 +1,5 @@
 import jetbrains.buildServer.configs.kotlin.*
+import jetbrains.buildServer.configs.kotlin.buildSteps.script
 import jetbrains.buildServer.configs.kotlin.projectFeatures.activeStorage
 import jetbrains.buildServer.configs.kotlin.projectFeatures.awsConnection
 import jetbrains.buildServer.configs.kotlin.projectFeatures.s3Storage
@@ -41,7 +42,10 @@ project {
             awsEnvironment = default {
                 awsRegionName = "eu-central-1"
             }
+            credentials = accessKeys()
             useDefaultCredentialProviderChain = true
+            param("aws.service.endpoint", "")
+            param("aws.external.id", "TeamCity-server-6af6c2da-3166-44ef-a1b0-9104f03825e4")
         }
         activeStorage {
             id = "PROJECT_EXT_5"
@@ -60,6 +64,17 @@ object Build : BuildType({
 
     vcs {
         root(DslContext.settingsRoot)
+    }
+
+    steps {
+        script {
+            name = "Test S3"
+            scriptContent = """
+                touch test.txt
+                echo "TEST" > test.txt
+                zip test.zip test.txt
+            """.trimIndent()
+        }
     }
 
     triggers {
