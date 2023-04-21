@@ -62,6 +62,8 @@ project {
 object Build : BuildType({
     name = "Build"
 
+    artifactRules = "test.zip"
+
     vcs {
         root(DslContext.settingsRoot)
     }
