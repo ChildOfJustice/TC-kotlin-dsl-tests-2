@@ -24,7 +24,7 @@ To debug in IntelliJ Idea, open the 'Maven Projects' tool window (View
 'Debug' option is available in the context menu for the task.
 */
 
-version = "2022.04"
+version = "2022.10"
 
 project {
 
@@ -34,11 +34,7 @@ project {
         awsConnection {
             id = "SomeTestConnection"
             name = "SomeTestConnection"
-            credentialsType = static {
-                accessKeyId = "test"
-                secretAccessKey = "credentialsJSON:0b0df72f-376a-46b3-901d-396e3025e721"
-            }
-            param("awsSessionDuration", "60")
+            credentialsType = default()
         }
     }
 }
