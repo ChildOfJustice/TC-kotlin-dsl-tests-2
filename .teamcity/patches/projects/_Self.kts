@@ -25,6 +25,7 @@ changeProject(DslContext.projectId) {
             }
         }
         feature1.apply {
+            credentialsType = default()
         }
     }
 }
