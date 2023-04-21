@@ -1,4 +1,5 @@
 import jetbrains.buildServer.configs.kotlin.*
+import jetbrains.buildServer.configs.kotlin.projectFeatures.activeStorage
 import jetbrains.buildServer.configs.kotlin.projectFeatures.awsConnection
 import jetbrains.buildServer.configs.kotlin.projectFeatures.s3Storage
 import jetbrains.buildServer.configs.kotlin.triggers.vcs
@@ -41,6 +42,10 @@ project {
                 awsRegionName = "eu-central-1"
             }
             useDefaultCredentialProviderChain = true
+        }
+        activeStorage {
+            id = "PROJECT_EXT_5"
+            activeStorageID = "PROJECT_EXT_4"
         }
         awsConnection {
             id = "SomeTestConnection"
