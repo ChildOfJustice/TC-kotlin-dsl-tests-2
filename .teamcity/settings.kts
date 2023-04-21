@@ -1,5 +1,6 @@
 import jetbrains.buildServer.configs.kotlin.*
 import jetbrains.buildServer.configs.kotlin.projectFeatures.awsConnection
+import jetbrains.buildServer.configs.kotlin.projectFeatures.s3Storage
 import jetbrains.buildServer.configs.kotlin.triggers.vcs
 
 /*
@@ -31,6 +32,16 @@ project {
     buildType(Build)
 
     features {
+        s3Storage {
+            id = "PROJECT_EXT_4"
+            storageName = "Test old S3"
+            bucketName = "yuldashev-test"
+            bucketPrefix = "oldS3"
+            awsEnvironment = default {
+                awsRegionName = "eu-central-1"
+            }
+            useDefaultCredentialProviderChain = true
+        }
         awsConnection {
             id = "SomeTestConnection"
             name = "SomeTestConnection"
