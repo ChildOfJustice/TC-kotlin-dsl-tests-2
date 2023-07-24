@@ -25,4 +25,55 @@ To debug in IntelliJ Idea, open the 'Maven Projects' tool window (View
 version = "2023.05"
 
 project {
+
+    id("Project")
+    name = "My Project"
+
+    buildType(Build)
+
+    subProject {
+        id("SubProject")
+        name = "My SubProject"
+
+        features {
+            createAWSProfile("AWSProfile1", this.id.toString())
+        }
+    }
 }
+
+fun ProjectExtension.createAWSProfile(profileName: String, namespace: String) {
+
+    val projectHash = kotlin.math.abs(profileName.hashCode())
+    val profile = "$namespace.$projectHash"
+
+    cloudProfile {
+        id(profile)
+        name = profileName
+        type = "aws"
+        param("secure:accessKeyId", DSLContext.getSecret("credentialsJSON:"))
+        param("secure:secretAccessKey", DSLContext.getSecret("credentialsJSON:"))
+        param("region", "us-west-1")
+    }
+}
+
+object Build : BuildType({
+    name = "Build"
+
+    vcs {
+        root(DslContext.settingsRoot)
+    }
+
+    steps {
+        script {
+            name = "Test build"
+            scriptContent = """
+                echo "Test"
+            """.trimIndent()
+        }
+    }
+
+    triggers {
+        vcs {
+        }
+    }
+})
