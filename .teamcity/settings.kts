@@ -27,42 +27,42 @@ To debug in IntelliJ Idea, open the 'Maven Projects' tool window (View
 'Debug' option is available in the context menu for the task.
 */
 
-version = "2022.10"
+version = "2023.05"
 
 project {
 
+    id("Project")
+    name = "My Project"
+
     buildType(Build)
 
-    features {
-        s3Storage {
-            id = "PROJECT_EXT_4"
-            storageName = "Test old S3"
-            bucketName = "yuldashev-test"
-            bucketPrefix = "oldS3"
-            awsEnvironment = default {
-                awsRegionName = "eu-central-1"
-            }
-            credentials = accessKeys()
-            useDefaultCredentialProviderChain = true
-            param("aws.service.endpoint", "")
-            param("aws.external.id", "TeamCity-server-6af6c2da-3166-44ef-a1b0-9104f03825e4")
+    subProject {
+        id("SubProject")
+        name = "My SubProject"
+
+        features {
+            createAWSProfile("AWSProfile1", this.id.toString())
         }
-        activeStorage {
-            id = "PROJECT_EXT_5"
-            activeStorageID = "PROJECT_EXT_4"
-        }
-        awsConnection {
-            id = "SomeTestConnection"
-            name = "SomeTestConnection"
-            credentialsType = default()
-        }
+    }
+}
+
+fun ProjectExtension.createAWSProfile(profileName: String, namespace: String) {
+
+    val projectHash = kotlin.math.abs(profileName.hashCode())
+    val profile = "$namespace.$projectHash"
+
+    cloudProfile {
+        id(profile)
+        name = profileName
+        type = "aws"
+        param("secure:accessKeyId", DSLContext.getSecret("credentialsJSON:"))
+        param("secure:secretAccessKey", DSLContext.getSecret("credentialsJSON:"))
+        param("region", "us-west-1")
     }
 }
 
 object Build : BuildType({
     name = "Build"
-
-    artifactRules = "test.zip"
 
     vcs {
         root(DslContext.settingsRoot)
@@ -70,11 +70,9 @@ object Build : BuildType({
 
     steps {
         script {
-            name = "Test S3"
+            name = "Test build"
             scriptContent = """
-                touch test.txt
-                echo "TEST" > test.txt
-                zip test.zip test.txt
+                echo "Test"
             """.trimIndent()
         }
     }
